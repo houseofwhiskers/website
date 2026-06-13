@@ -44,4 +44,8 @@ if(order){
     <div class="summary-row"><span>Items</span><span>${order.items}</span></div>
     <div class="summary-row"><span>Delivery</span><span>${order.ship}</span></div>
     <div class="summary-row total"><span>Total paid</span><span>${HOW.money(order.total)}</span></div>
-    <div class="su
+    <div class="summary-row" style="color:var(--mist)"><span>Estimated arrival</span><span>${new Date(Date.now()+3*864e5).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})}</span></div>`;
+}
+</script>
+</body>
+</html>

@@ -122,4 +122,33 @@ async function placeOrder(){
   const btn = document.querySelector('.checkout-grid .btn-primary');
   // Save a pending order so the confirmation page can show details on return
   const order = { id: 'HOW' + Math.floor(100000+Math.random()*900000), total: totals().total, items: HOW.cartCount(), ship: SHIP[shipMethod].label };
-  try { localStorage.setIt
+  try { localStorage.setItem('how_last_order', JSON.stringify(order)); } catch(e){}
+
+  // Try the real Stripe checkout via the Netlify function
+  if (btn){ btn.textContent = 'Redirecting to secure payment\u2026'; btn.style.pointerEvents='none'; }
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: HOW.getCart(), shipping: shipMethod })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) { location.href = data.url; return; }
+    } else if (res.status === 503) {
+      HOW.toast('Payments not live yet \u2014 showing demo confirmation.');
+    } else {
+      HOW.toast('Payment could not start. Please try again.');
+    }
+  } catch (e) {
+    HOW.toast('Network issue starting payment \u2014 showing demo confirmation.');
+  }
+
+  // Fallback (Stripe not configured / unreachable): keep the demo flow working
+  HOW.clearCart();
+  location.href = 'confirmation.html';
+}
+render();
+</script>
+</body>
+</html>
