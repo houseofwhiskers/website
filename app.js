@@ -206,7 +206,7 @@ function footerHTML() {
       '<div class="foot-brand"><div class="foot-logo">House of Whiskers</div>' +
         '<div class="foot-url">houseofwhiskers.com.au</div>' +
         '<p class="foot-tagline">Australia\'s most curated online store for cats and dogs. Premium food, beds, toys and accessories — delivered to your door.</p>' +
-        '<div class="socials"><a href="https://www.instagram.com/houseofwhiskers" class="sbtn" target="_blank">📸</a>' +
+        '<div class="socials"><a href="https://www.instagram.com/houseofwhiskers1" class="sbtn" target="_blank">📸</a>' +
           '<a href="#" class="sbtn">f</a><a href="#" class="sbtn">𝕏</a><a href="#" class="sbtn">▶</a></div></div>' +
       col("cats", "Shop Cats") +
       col("dogs", "Shop Dogs") +
