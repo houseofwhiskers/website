@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <span>Cart</span></div>
+  <h1 class="page-title">Your Cart</h1>
+</div></div>
+
+<div class="section-pad">
+  <div id="cartWrap"></div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+const FREE_OVER = 149;
+
+function render(){
+  const cart = HOW.getCart();
+  const wrap = document.getElementById('cartWrap');
+  if(!cart.length){
+    wrap.innerHTML = `<div class="empty-state"><div class="es-icon">🛒</div>
+      <p style="font-size:18px;color:var(--ink)">Your cart is empty.</p>
+      <p style="margin:8px 0 22px">Add something exceptional — they're watching.</p>
+      <a href="shop.html" class="btn-primary">Start Shopping →</a></div>`;
+    return;
+  }
+  const lines = cart.map(it=>{
+    const p = HOW.findProduct(it.id); if(!p) return '';
+    return `<div class="cart-line">
+      <div class="cart-line-img">${p.emoji}</div>
+      <div>
+        <div class="cart-line-brand">${p.brand}</div>
+        <a href="product.html?id=${p.id}"><div class="cart-line-name">${p.name}</div></a>
+        <div class="cart-line-ctrls">
+          <div class="pd-qty" style="transform:scale(.9);transform-origin:left">
+            <button onclick="HOW.setQty('${p.id}',${it.qty-1});render()">−</button>
+            <span>${it.qty}</span>
+            <button onclick="HOW.setQty('${p.id}',${it.qty+1});render()">+</button>
+          </div>
+          <span class="cart-rm-link" onclick="HOW.remove('${p.id}');render()">Remove</span>
+        </div>
+      </div>
+      <div class="cart-line-price">${HOW.money(p.price*it.qty)}</div>
+    </div>`;
+  }).join('');
+
+  const sub = HOW.cartSubtotal();
+  const save = HOW.cartMemberSave();
+  const ship = sub>=FREE_OVER || sub===0 ? 0 : 9.95;
+  const toFree = Math.max(0, FREE_OVER - sub);
+  const pct = Math.min(100, (sub/FREE_OVER)*100);
+
+  wrap.innerHTML = `<div class="cartpage">
+    <div>
+      ${lines}
+      <div style="margin-top:22px"><a href="shop.html" class="link-more">← Continue shopping</a></div>
+    </div>
+    <div class="summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row"><span>Subtotal</span><span>${HOW.money(sub)}</span></div>
+      <div class="summary-row"><span>Delivery</span><span>${ship===0?'FREE':HOW.money(ship)}</span></div>
+      ${toFree>0?`<div class="ship-note" style="text-align:left;margin:6px 0">Add ${HOW.money(toFree)} for free delivery</div><div class="progress-ship"><i style="width:${pct}%"></i></div>`:`<div class="ship-note" style="text-align:left;color:var(--leaf)">✓ You've unlocked free delivery</div>`}
+      <div class="summary-row total"><span>Total</span><span>${HOW.money(sub+ship)}</span></div>
+      <div class="summary-row" style="color:var(--leaf)"><span>🐾 Whisker Club members would save</span><span>${HOW.money(save)}</span></div>
+      <a href="checkout.html" class="btn-primary">Checkout →</a>
+      <div class="ship-note">Secure checkout · Demo store</div>
+    </div>
+  </div>`;
+}
+render();
+</script>
+</body>
+</html>

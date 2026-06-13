@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help &amp; FAQs — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <span>Help</span></div>
+  <h1 class="page-title">Help &amp; FAQs</h1>
+  <p class="page-lead">Delivery, returns, Repeat Delivery and the Whisker Club — answered.</p>
+</div></div>
+
+<div class="section-pad">
+  <div class="content-narrow">
+    <div class="two-col-feat" style="margin-bottom:40px">
+      <div class="feat-box"><div class="fb-icon">📦</div><h3>Delivery</h3><p>Free over $149. Standard 2–4 days, Express 1–2 days, Australia-wide.</p></div>
+      <div class="feat-box"><div class="fb-icon">↩️</div><h3>Returns</h3><p>30 days, change of mind welcome. Replace or refund, no restocking fees.</p></div>
+      <div class="feat-box"><div class="fb-icon">🔄</div><h3>Repeat Delivery</h3><p>Subscribe to save 5%. Pause, skip or cancel any time from your account.</p></div>
+    </div>
+
+    <h2 style="margin-bottom:8px">Frequently asked questions</h2>
+    <div id="faqs"></div>
+
+    <div style="text-align:center;margin-top:40px">
+      <p style="color:var(--mist);margin-bottom:14px">Still stuck?</p>
+      <a href="contact.html" class="btn-primary">Contact us →</a>
+    </div>
+  </div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+const FAQS = [
+  ["How much is delivery, and how long does it take?","Delivery is free on orders over $149. Below that, Standard delivery is a flat $9.95 (2–4 business days) and Express is $14.95 (1–2 business days). We dispatch from our Australian warehouse, usually same day for orders placed before 2pm AEST."],
+  ["Where do you deliver?","Anywhere in Australia. Remote areas may take an extra day or two, but the price is the same."],
+  ["What's your returns policy?","You have 30 days to return anything for a replacement or full refund — including change of mind. There are no restocking fees. Just start a return from your account and we'll send a prepaid label."],
+  ["How does Repeat Delivery work?","Pick how often you want an item (every 2, 4 or 8 weeks), and we'll send it automatically — with an extra 5% off every time. You can pause, skip or cancel whenever you like, no commitment."],
+  ["What is the Whisker Club, and is it really free?","Yes, genuinely free. Members save up to 10% on everything every day, get early access to new arrivals, and receive member-only offers. There are no fees and no minimum spend. Join from the Whisker Club page."],
+  ["Do you price match?","We do. If you find an identical in-stock item cheaper at another Australian retailer, let us know and we'll match it — no forms, no fuss."],
+  ["Is this a real store?","This is a demo build of the House of Whiskers experience. You can browse, search, add to cart and run through checkout, but no payment is taken and no orders are actually shipped."],
+];
+document.getElementById('faqs').innerHTML = FAQS.map(([q,a])=>`
+  <div class="faq"><div class="faq-q" onclick="toggleFaq(this)">${q}<span>+</span></div><div class="faq-a"><p>${a}</p></div></div>`).join('');
+function toggleFaq(el){
+  const f = el.parentElement;
+  const a = f.querySelector('.faq-a');
+  const open = f.classList.toggle('on');
+  a.style.maxHeight = open ? a.scrollHeight+'px' : '0';
+}
+</script>
+</body>
+</html>

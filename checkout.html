@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <a href="cart.html">Cart</a> / <span>Checkout</span></div>
+  <h1 class="page-title">Checkout</h1>
+</div></div>
+
+<div class="section-pad">
+  <div class="steps" id="steps">
+    <div class="step on" id="step-1">1 · Details</div>
+    <div class="step" id="step-2">2 · Delivery</div>
+    <div class="step" id="step-3">3 · Payment</div>
+  </div>
+  <div id="coRoot"></div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+const FREE_OVER = 149;
+let step = 1;
+let shipMethod = 'standard';
+const SHIP = { standard:{label:'Standard',desc:'2–4 business days',price:9.95}, express:{label:'Express',desc:'1–2 business days',price:14.95} };
+
+function totals(){
+  const sub = HOW.cartSubtotal();
+  let ship = SHIP[shipMethod].price;
+  if(sub>=FREE_OVER && shipMethod==='standard') ship = 0;
+  return { sub, ship, total: sub+ship };
+}
+
+function summaryCard(){
+  const cart = HOW.getCart();
+  const t = totals();
+  const lines = cart.map(it=>{ const p=HOW.findProduct(it.id); return p?`<div class="summary-row"><span>${p.brand} ${p.name.split('—')[0].trim()} ×${it.qty}</span><span>${HOW.money(p.price*it.qty)}</span></div>`:''; }).join('');
+  return `<div class="summary">
+    <h3>Order Summary</h3>
+    ${lines || '<p style="color:var(--mist);font-size:13px">Your cart is empty.</p>'}
+    <div class="summary-row" style="border-top:1px solid var(--blush-mid);margin-top:8px;padding-top:12px"><span>Subtotal</span><span>${HOW.money(t.sub)}</span></div>
+    <div class="summary-row"><span>Delivery (${SHIP[shipMethod].label})</span><span>${t.ship===0?'FREE':HOW.money(t.ship)}</span></div>
+    <div class="summary-row total"><span>Total</span><span>${HOW.money(t.total)}</span></div>
+  </div>`;
+}
+
+function render(){
+  const cart = HOW.getCart();
+  if(!cart.length){
+    document.getElementById('coRoot').innerHTML = `<div class="empty-state"><div class="es-icon">🛒</div><p>Your cart is empty.</p><a href="shop.html" class="btn-primary" style="margin-top:16px">Start Shopping →</a></div>`;
+    document.getElementById('steps').style.display='none';
+    return;
+  }
+  [1,2,3].forEach(n=>{
+    const el=document.getElementById('step-'+n);
+    el.className='step'+(n===step?' on':n<step?' done':'');
+  });
+
+  let main = '';
+  if(step===1){
+    main = `<div class="block-card"><h3>Your details</h3>
+      <div class="form-grid">
+        <div class="field"><label>First name</label><input id="f_first" placeholder="Marnie" /></div>
+        <div class="field"><label>Last name</label><input id="f_last" placeholder="Whiskerton" /></div>
+        <div class="field full"><label>Email</label><input id="f_email" type="email" placeholder="you@example.com" /></div>
+        <div class="field full"><label>Phone</label><input id="f_phone" placeholder="0400 000 000" /></div>
+      </div>
+      <button class="btn-primary btn-block" onclick="go(2)">Continue to delivery →</button>
+    </div>`;
+  } else if(step===2){
+    main = `<div class="block-card"><h3>Delivery address</h3>
+      <div class="form-grid">
+        <div class="field full"><label>Street address</label><input id="f_addr" placeholder="1 Catnip Lane" /></div>
+        <div class="field"><label>Suburb</label><input id="f_suburb" placeholder="Fitzroy" /></div>
+        <div class="field"><label>State</label>
+          <select id="f_state"><option>VIC</option><option>NSW</option><option>QLD</option><option>WA</option><option>SA</option><option>TAS</option><option>ACT</option><option>NT</option></select></div>
+        <div class="field"><label>Postcode</label><input id="f_post" placeholder="3065" /></div>
+      </div>
+      <h3 style="margin-top:24px">Delivery method</h3>
+      <div class="radio-row ${shipMethod==='standard'?'on':''}" onclick="setShip('standard')"><div><div class="rr-title">Standard</div><div class="rr-desc">2–4 business days</div></div><div class="rr-price">${HOW.cartSubtotal()>=FREE_OVER?'FREE':'$9.95'}</div></div>
+      <div class="radio-row ${shipMethod==='express'?'on':''}" onclick="setShip('express')"><div><div class="rr-title">Express</div><div class="rr-desc">1–2 business days</div></div><div class="rr-price">$14.95</div></div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button class="btn-ghost" style="color:var(--ink);border-color:var(--blush-mid);flex:1;justify-content:center" onclick="go(1)">← Back</button>
+        <button class="btn-primary" style="flex:2;justify-content:center" onclick="go(3)">Continue to payment →</button>
+      </div>
+    </div>`;
+  } else {
+    main = `<div class="block-card"><h3>Payment</h3>
+      <p style="font-size:13px;color:var(--mist);margin-bottom:18px">This is a demo store — no card is charged and no details are stored.</p>
+      <div class="form-grid">
+        <div class="field full"><label>Card number</label><input placeholder="4242 4242 4242 4242" /></div>
+        <div class="field"><label>Expiry</label><input placeholder="12 / 28" /></div>
+        <div class="field"><label>CVC</label><input placeholder="123" /></div>
+        <div class="field full"><label>Name on card</label><input placeholder="M Whiskerton" /></div>
+      </div>
+      <label style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-soft);margin:6px 0 18px"><input type="checkbox" checked style="width:auto" /> Join the Whisker Club free and save up to 10% on this order</label>
+      <div style="display:flex;gap:12px">
+        <button class="btn-ghost" style="color:var(--ink);border-color:var(--blush-mid);flex:1;justify-content:center" onclick="go(2)">← Back</button>
+        <button class="btn-primary" style="flex:2;justify-content:center" onclick="placeOrder()">Place Order · ${HOW.money(totals().total)} →</button>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('coRoot').innerHTML = `<div class="checkout-grid"><div>${main}</div>${summaryCard()}</div>`;
+}
+
+function go(n){ step=n; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function setShip(m){ shipMethod=m; render(); }
+
+async function placeOrder(){
+  const btn = document.querySelector('.checkout-grid .btn-primary');
+  // Save a pending order so the confirmation page can show details on return
+  const order = { id: 'HOW' + Math.floor(100000+Math.random()*900000), total: totals().total, items: HOW.cartCount(), ship: SHIP[shipMethod].label };
+  try { localStorage.setIt

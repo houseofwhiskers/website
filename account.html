@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+<div class="section-pad" id="root"></div>
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+const view = HOW.qp('view');
+const root = document.getElementById('root');
+
+function signin(){
+  root.innerHTML = `
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p style="font-size:13px;color:var(--mist);margin-bottom:18px">Sign in to your House of Whiskers account.</p>
+      <form onsubmit="doSignin(event)">
+        <div class="field"><label>Email</label><input type="email" required placeholder="you@example.com" /></div>
+        <div class="field"><label>Password</label><input type="password" required placeholder="••••••••" /></div>
+        <button class="btn-primary btn-block" type="submit">Sign In →</button>
+      </form>
+      <div class="auth-switch">New here? <a href="club.html">Join the Whisker Club free</a></div>
+    </div>`;
+}
+function doSignin(e){ e.preventDefault(); HOW.toast('Signed in 🐾'); setTimeout(()=>location.href='account.html',700); }
+
+function dashboard(){
+  let last=null; try{ last=JSON.parse(localStorage.getItem('how_last_order')); }catch(e){}
+  const recentOrder = last
+    ? `<div class="order-row"><div><b>#${last.id}</b> · ${last.items} item${last.items===1?'':'s'} · ${last.ship}<div style="font-size:12px;color:var(--mist)">Placed today</div></div><div style="display:flex;gap:14px;align-items:center"><span class="tag-pill amber">Processing</span><b>${HOW.money(last.total)}</b></div></div>`
+    : '';
+  root.innerHTML = `
+  <div class="page-head" style="background:none;border:none;padding:0;margin-bottom:30px">
+    <div class="crumbs"><a href="index.html">Home</a> / <span>My Account</span></div>
+    <h1 class="page-title">Hello, Marnie 🐾</h1>
+    <p class="page-lead">Whisker Club member since 2024 — you've saved a tidy amount being needlessly fancy.</p>
+  </div>
+  <div class="dash-grid">
+    <nav class="dash-nav">
+      <a class="on" href="account.html">Dashboard</a>
+      <a href="account.html">Orders</a>
+      <a href="account.html">Repeat Delivery</a>
+      <a href="account.html">Addresses</a>
+      <a href="club.html">Whisker Club</a>
+      <a href="account.html?view=signin">Sign out</a>
+    </nav>
+    <div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num">7</div><div class="stat-lbl">Orders placed</div></div>
+        <div class="stat-card"><div class="stat-num">$182</div><div class="stat-lbl">Saved as a member</div></div>
+        <div class="stat-card"><div class="stat-num">Gold</div><div class="stat-lbl">Club tier</div></div>
+      </div>
+      <h3 style="font-family:var(--font-head);font-size:26px;margin:8px 0 16px">Recent orders</h3>
+      ${recentOrder}
+      <div class="order-row"><div><b>#HOW418204</b> · 3 items · Standard<div style="font-size:12px;color:var(--mist)">12 May 2026</div></div><div style="display:flex;gap:14px;align-items:center"><span class="tag-pill green">Delivered</span><b>$94.97</b></div></div>
+      <div class="order-row"><div><b>#HOW402911</b> · 1 item · Express<div style="font-size:12px;color:var(--mist)">28 Apr 2026</div></div><div style="display:flex;gap:14px;align-items:center"><span class="tag-pill green">Delivered</span><b>$129.99</b></div></div>
+      <div class="order-row"><div><b>#HOW388145</b> · 5 items · Standard<div style="font-size:12px;color:var(--mist)">2 Apr 2026</div></div><div style="display:flex;gap:14px;align-items:center"><span class="tag-pill green">Delivered</span><b>$211.40</b></div></div>
+      <div style="margin-top:22px"><a href="shop.html" class="btn-primary">Shop again →</a></div>
+    </div>
+  </div>`;
+}
+
+if(view==='signin') signin(); else dashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Netlify configuration for House of Whiskers
+# Static site + serverless function for Stripe Checkout.
+
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

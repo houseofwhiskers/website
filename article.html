@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+<div id="root"></div>
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script src="articles.js"></script>
+<script>
+HOW.mountChrome();
+const a = ARTICLES[HOW.qp('id')];
+const root = document.getElementById('root');
+
+if(!a){
+  root.innerHTML = '<div class="section-pad"><div class="empty-state"><div class="es-icon">📖</div><p>Article not found. <a href="journal.html" style="color:var(--sand-dk);text-decoration:underline">Back to the Journal</a>.</p></div></div>';
+} else {
+  document.title = a.title + ' — House of Whiskers';
+  const bodyHtml = a.body.map(b=>{
+    if(b.lead) return `<p class="lead">${b.lead}</p>`;
+    if(b.h2) return `<h2>${b.h2}</h2>`;
+    if(b.p) return `<p>${b.p}</p>`;
+    if(b.pull) return `<div class="pull">${b.pull}</div>`;
+    if(b.ul) return `<ul>${b.ul.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    return '';
+  }).join('');
+
+  root.innerHTML = `
+    <div class="page-head"><div class="page-head-inner">
+      <div class="crumbs"><a href="index.html">Home</a> / <a href="journal.html">Journal</a> / <span>${a.tag}</span></div>
+      <h1 class="page-title" style="max-width:840px">${a.title}</h1>
+      <p class="page-lead">${a.meta}</p>
+    </div></div>
+    <div class="article-hero-img" style="background-image:url('${a.img}')"></div>
+    <div class="section-pad">
+      <div class="article-body">${bodyHtml}
+        <div style="border-top:1px solid var(--blush-mid);margin-top:36px;padding-top:24px">
+          <a href="journal.html" class="link-more">← More from the Journal</a>
+        </div>
+      </div>
+      <div style="max-width:1080px;margin:56px auto 0">
+        <div class="sec-head"><div><div class="sec-title" style="font-size:28px">Shop this article</div></div></div>
+        <div class="pgrid" id="related"></div>
+      </div>
+    </div>`;
+
+  HOW.renderGrid(document.getElementById('related'), (a.related||[]).map(HOW.findProduct).filter(Boolean));
+}
+</script>
+</body>
+</html>

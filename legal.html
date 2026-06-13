@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+<div id="root"></div>
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+const DOCS = {
+  privacy: { title:"Privacy Policy", body:[
+    ["",'This is a demo store. The text below is illustrative and not legal advice.'],
+    ["What we collect","To process an order we would collect your name, contact details and delivery address. In this demo, nothing you type is sent anywhere or stored on our servers — your cart lives only in your own browser."],
+    ["How we use it","In a live store, your details would be used solely to fulfil orders, provide support and (if you opt in) send Whisker Club updates. We would never sell your data."],
+    ["Your choices","You can request access to, correction of, or deletion of your data at any time by contacting us."],
+  ]},
+  terms: { title:"Terms of Use", body:[
+    ["",'This is a demo store. The text below is illustrative and not legal advice.'],
+    ["Using this site","By browsing House of Whiskers you agree to use the site lawfully and not to misuse its content or functionality."],
+    ["Orders & pricing","All prices are in AUD and include GST. In a live store we would reserve the right to correct pricing errors and to decline or cancel orders in limited circumstances."],
+    ["Whisker Club","Membership is free and member pricing applies automatically. We may update member benefits from time to time with notice."],
+  ]},
+  accessibility: { title:"Accessibility", body:[
+    ["","We want House of Whiskers to be usable by everyone, including people who rely on assistive technology."],
+    ["Our commitment","We aim to meet WCAG 2.1 AA standards: readable contrast, keyboard-navigable controls, descriptive links and resizable text."],
+    ["Feedback","If you hit a barrier anywhere on the site, please tell us via the contact page and we'll prioritise a fix."],
+  ]},
+  cookies: { title:"Cookie Preferences", body:[
+    ["","This demo uses only essential browser storage — your shopping cart and last order are kept in your own browser's local storage so they persist as you move between pages."],
+    ["Essential","Required for the cart, checkout and basic site function. Always on."],
+    ["Analytics & marketing","A live store might use these to understand traffic and tailor offers. This demo uses none."],
+  ]},
+};
+const doc = DOCS[HOW.qp('doc')] || DOCS.privacy;
+document.title = doc.title + ' — House of Whiskers';
+document.getElementById('root').innerHTML = `
+  <div class="page-head"><div class="page-head-inner">
+    <div class="crumbs"><a href="index.html">Home</a> / <span>${doc.title}</span></div>
+    <h1 class="page-title">${doc.title}</h1>
+    <p class="page-lead">Last updated 13 June 2026</p>
+  </div></div>
+  <div class="section-pad"><div class="content-narrow">
+    ${doc.body.map(([h,p])=>(h?`<h2>${h}</h2>`:'')+`<p>${p}</p>`).join('')}
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:34px;border-top:1px solid var(--blush-mid);padding-top:20px">
+      <a href="legal.html?doc=privacy" class="link-more">Privacy</a>
+      <a href="legal.html?doc=terms" class="link-more">Terms</a>
+      <a href="legal.html?doc=accessibility" class="link-more">Accessibility</a>
+      <a href="legal.html?doc=cookies" class="link-more">Cookies</a>
+    </div>
+  </div></div>`;
+</script>
+</body>
+</html>

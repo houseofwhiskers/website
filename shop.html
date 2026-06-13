@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <span id="crumbNow">Shop</span></div>
+  <h1 class="page-title" id="shopTitle">Shop All</h1>
+  <p class="page-lead" id="shopLead">Everything for the cats and dogs who run the house — curated, never cluttered.</p>
+</div></div>
+
+<div class="section-pad">
+  <div class="shop-layout">
+    <aside class="shop-aside">
+      <div class="filter-block">
+        <h4>Pet</h4>
+        <div id="petFilters"></div>
+      </div>
+      <div class="filter-block">
+        <h4>Category</h4>
+        <div id="catFilters"></div>
+      </div>
+      <div class="filter-block">
+        <h4>Price</h4>
+        <div class="filter-link" onclick="setPrice(null)" id="pr-all">All prices</div>
+        <div class="filter-link" onclick="setPrice([0,25])" id="pr-0">Under $25</div>
+        <div class="filter-link" onclick="setPrice([25,75])" id="pr-1">$25 – $75</div>
+        <div class="filter-link" onclick="setPrice([75,150])" id="pr-2">$75 – $150</div>
+        <div class="filter-link" onclick="setPrice([150,9999])" id="pr-3">$150+</div>
+      </div>
+    </aside>
+
+    <div class="shop-main">
+      <div class="shop-toolbar">
+        <div class="shop-count" id="shopCount"></div>
+        <div class="shop-sort">
+          <label for="sortSel" style="font-size:12px;color:var(--mist)">Sort</label>
+          <select id="sortSel" onchange="render()">
+            <option value="featured">Featured</option>
+            <option value="priceAsc">Price: Low to High</option>
+            <option value="priceDesc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+      <div class="pgrid" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome(HOW.qp('pet') || (HOW.qp('q') ? '' : 'shop'));
+
+let state = {
+  pet: HOW.qp('pet') || 'all',
+  cat: HOW.qp('cat') || 'all',
+  q:   HOW.qp('q') || '',
+  price: null,
+};
+
+function allCats(){
+  // union of category keys/labels appropriate to current pet selection
+  const src = state.pet === 'dogs' ? HOW.CATS.dogs : HOW.CATS.cats;
+  return src;
+}
+
+function buildFilters(){
+  const pets = [['all','All Pets'],['cats','Cats'],['dogs','Dogs']];
+  document.getElementById('petFilters').innerHTML = pets.map(([k,l])=>{
+    const n = k==='all' ? HOW.CATALOG.length : HOW.CATALOG.filter(p=>p.pet===k).length;
+    return `<div class="filter-link ${state.pet===k?'on':''}" onclick="setPet('${k}')">${l}<span class="fcount">${n}</span></div>`;
+  }).join('');
+
+  const cats = allCats();
+  let html = `<div class="filter-link ${state.cat==='all'?'on':''}" onclick="setCat('all')">All categories</div>`;
+  html += cats.map(c=>{
+    const n = HOW.CATALOG.filter(p=>(state.pet==='all'||p.pet===state.pet)&&p.cat===c.key).length;
+    return `<div class="filter-link ${state.cat===c.key?'on':''}" onclick="setCat('${c.key}')">${c.label}<span class="fcount">${n}</span></div>`;
+  }).join('');
+  document.getElementById('catFilters').innerHTML = html;
+
+  ['pr-all','pr-0','pr-1','pr-2','pr-3'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  const map = {null:'pr-all','0,25':'pr-0','25,75':'pr-1','75,150':'pr-2','150,9999':'pr-3'};
+  document.getElementById(map[state.price?state.price.join(','):null]||'pr-all').classList.add('on');
+}
+
+function setPet(k){ state.pet=k; state.cat='all'; sync(); }
+function setCat(k){ state.cat=k; sync(); }
+function setPrice(r){ state.price=r; sync(); }
+
+function sync(){
+  // reflect in URL (no reload) for shareability
+  const u = new URLSearchParams();
+  if(state.pet!=='all') u.set('pet',state.pet);
+  if(state.cat!=='all') u.set('cat',state.cat);
+  if(state.q) u.set('q',state.q);
+  history.replaceState(null,'','shop.html'+(u.toString()?'?'+u.toString():''));
+  buildFilters(); render();
+}
+
+function filtered(){
+  let list = HOW.CATALOG.slice();
+  if(state.pet!=='all') list = list.filter(p=>p.pet===state.pet);
+  if(state.cat!=='all') list = list.filter(p=>p.cat===state.cat);
+  if(state.q){ const q=state.q.toLowerCase(); list = list.filter(p=>(p.name+' '+p.brand+' '+p.cat).toLowerCase().includes(q)); }
+  if(state.price) list = list.filter(p=>p.price>=state.price[0]&&p.price<state.price[1]);
+  const s = document.getElementById('sortSel').value;
+  if(s==='priceAsc') list.sort((a,b)=>a.price-b.price);
+  else if(s==='priceDesc') list.sort((a,b)=>b.price-a.price);
+  else if(s==='rating') list.sort((a,b)=>b.r-a.r);
+  return list;
+}
+
+function render(){
+  const list = filtered();
+  HOW.renderGrid(document.getElementById('grid'), list);
+  document.getElementById('shopCount').textContent = `${list.length} product${list.length===1?'':'s'}`;
+
+  // titles
+  let title = 'Shop All', lead = 'Everything for the cats and dogs who run the house — curated, never cluttered.';
+  if(state.q){ title = 'Search results'; lead = `Showing matches for “${state.q}”.`; }
+  else if(state.pet!=='all' && state.cat!=='all'){ title = `${state.pet==='cats'?'Cat':'Dog'} ${HOW.catLabel(state.pet,state.cat)}`; lead=''; }
+  else if(state.pet!=='all'){ title = state.pet==='cats'?'Everything for Cats':'Everything for Dogs'; lead = state.pet==='cats'?'Food, beds, toys, litter and the finer things in feline life.':'Food, beds, toys, leads and gear for the good boys and girls.'; }
+  else if(state.cat!=='all'){ title = HOW.catLabel('cats',state.cat); lead=''; }
+  document.getElementById('shopTitle').textContent = title;
+  document.getElementById('shopLead').textContent = lead;
+  document.getElementById('shopLead').style.display = lead?'block':'none';
+  document.getElementById('crumbNow').textContent = title;
+}
+
+buildFilters(); render();
+</script>
+</body>
+</html>

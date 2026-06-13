@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <span>Contact</span></div>
+  <h1 class="page-title">Get in touch</h1>
+  <p class="page-lead">We're an online store, so there's no front counter — but there are real humans on the other end of every message.</p>
+</div></div>
+
+<div class="section-pad">
+  <div class="checkout-grid">
+    <div class="block-card">
+      <h3>Send us a message</h3>
+      <form onsubmit="sendMsg(event)">
+        <div class="form-grid">
+          <div class="field"><label>Name</label><input required placeholder="Your name" /></div>
+          <div class="field"><label>Email</label><input type="email" required placeholder="you@example.com" /></div>
+          <div class="field full"><label>Topic</label><select><option>Order &amp; delivery</option><option>Returns &amp; refunds</option><option>Product question</option><option>Whisker Club</option><option>Something else</option></select></div>
+          <div class="field full"><label>Message</label><textarea rows="5" required placeholder="How can we help?"></textarea></div>
+        </div>
+        <button class="btn-primary btn-block" type="submit">Send message →</button>
+      </form>
+    </div>
+    <div>
+      <div class="block-card">
+        <h3>Other ways to reach us</h3>
+        <ul class="pd-meta-list" style="border:none;padding:0">
+          <li>✉️ <span><b>Email</b><br>help@houseofwhiskers.com.au</span></li>
+          <li>💬 <span><b>Live chat</b><br>Mon–Fri, 9am–6pm AEST</span></li>
+          <li>📦 <span><b>Order help</b><br>Track everything from <a href="account.html" style="color:var(--sand-dk)">your account</a></span></li>
+          <li>⏱️ <span><b>Response time</b><br>Usually within one business day</span></li>
+        </ul>
+      </div>
+      <div class="block-card">
+        <h3>Quick answers</h3>
+        <p style="font-size:13px;color:var(--mist)">Most questions about delivery, returns and Repeat Delivery are answered on our <a href="help.html" style="color:var(--sand-dk)">Help &amp; FAQs</a> page.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+function sendMsg(e){ e.preventDefault(); HOW.toast('Message sent — we\'ll be in touch soon 🐾'); e.target.reset(); }
+</script>
+</body>
+</html>

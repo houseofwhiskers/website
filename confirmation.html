@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="section-pad">
+  <div class="confirm-hero">
+    <div class="confirm-check">✓</div>
+    <h1 class="page-title" style="font-size:40px">Order confirmed</h1>
+    <p class="page-lead" style="margin:12px auto 0" id="confMsg">Thank you — your order is on its way to being packed.</p>
+    <div class="block-card" id="orderCard" style="text-align:left;max-width:440px;margin:30px auto;display:none"></div>
+    <p style="font-size:13px;color:var(--mist);margin-bottom:24px">A confirmation email is on its way (well — it would be, in a real store).</p>
+    <div class="hero-ctas" style="justify-content:center">
+      <a href="shop.html" class="btn-primary">Keep Shopping →</a>
+      <a href="account.html" class="btn-ghost" style="color:var(--ink);border-color:var(--blush-mid)">View My Orders</a>
+    </div>
+  </div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script>
+HOW.mountChrome();
+// If we've returned from a successful Stripe payment, clear the cart now.
+const paid = new URLSearchParams(location.search).get('paid') === '1';
+if (paid) { try { HOW.clearCart(); } catch(e){} }
+let order=null;
+try{ order = JSON.parse(localStorage.getItem('how_last_order')); }catch(e){}
+if(order){
+  document.getElementById('confMsg').innerHTML = `Thank you — order <b>#${order.id}</b> is confirmed${paid ? ' and paid' : ''}.`;
+  const card = document.getElementById('orderCard');
+  card.style.display='block';
+  card.innerHTML = `
+    <div class="summary-row"><span>Order number</span><span><b>#${order.id}</b></span></div>
+    <div class="summary-row"><span>Items</span><span>${order.items}</span></div>
+    <div class="summary-row"><span>Delivery</span><span>${order.ship}</span></div>
+    <div class="summary-row total"><span>Total paid</span><span>${HOW.money(order.total)}</span></div>
+    <div class="su

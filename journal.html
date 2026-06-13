@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Whiskers Journal — House of Whiskers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="site-top"></div>
+
+<div class="page-head"><div class="page-head-inner">
+  <div class="crumbs"><a href="index.html">Home</a> / <span>Journal</span></div>
+  <h1 class="page-title">The Whiskers Journal</h1>
+  <p class="page-lead">Buying guides, care tips and the occasional strong opinion — read by cats (reportedly).</p>
+</div></div>
+
+<div class="section-pad">
+  <div class="art-grid" id="artGrid"></div>
+</div>
+
+<div id="site-bottom"></div>
+<script src="app.js"></script>
+<script src="articles.js"></script>
+<script>
+HOW.mountChrome();
+document.getElementById('artGrid').innerHTML = Object.entries(ARTICLES).map(([id,a])=>`
+  <a class="acard" href="article.html?id=${id}">
+    <div class="aimg"><div class="aimg-bg" style="background-image:url('${a.img}');background-size:cover;background-position:center;"></div></div>
+    <div class="abody"><div class="atag">${a.tag}</div><div class="atitle">${a.title}</div><div class="aexcerpt">${a.excerpt}</div></div>
+    <div class="afoot"><div class="ameta">${a.meta}</div><div class="aread">Read →</div></div>
+  </a>`).join('');
+</script>
+</body>
+</html>
