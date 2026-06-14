@@ -330,13 +330,32 @@ function mountChrome(active) {
   renderDrawer();
 }
 
+/* ── NEWSLETTER / WHISKER CLUB SIGNUP ─────────────────────── */
+async function subscribe(email, name, source) {
+  email = (email || "").trim();
+  // 1) MailerLite — adds to the Whisker Club group (welcome automation + weekly campaigns)
+  const ml = fetch("/.netlify/functions/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, name: name || "", source: source || "" }),
+  }).catch(() => {});
+  // 2) Netlify Forms — emails the owner (sam@houseofwhiskers.com.au) on every signup
+  const nf = fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ "form-name": "whisker-signup", email, source: source || "" }).toString(),
+  }).catch(() => {});
+  await Promise.allSettled([ml, nf]);
+  return true;
+}
+
 /* ── PUBLIC API ───────────────────────────────────────────── */
 window.HOW = {
   CATALOG, CATS,
   money, memberSaveStr, findProduct, qp, catLabel,
   getCart, cartCount, cartSubtotal, cartMemberSave,
   add: addToCart, setQty, remove: removeFromCart, clearCart,
-  productCard, renderGrid, searchCatalog,
+  productCard, renderGrid, searchCatalog, subscribe,
   openCart, closeCart, toast, search,
   mountChrome,
 };

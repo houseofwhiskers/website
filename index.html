@@ -12,6 +12,13 @@
 </head>
 <body>
 
+<!-- Hidden form so Netlify detects it and emails the owner on each signup -->
+<form name="whisker-signup" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="email" name="email" />
+  <input type="text" name="source" />
+  <input type="text" name="bot-field" />
+</form>
+
 <div id="site-top"></div>
 
 <!-- DELIVERY BAR -->
@@ -242,7 +249,13 @@ track.addEventListener('mouseenter',()=>clearInterval(ht));
 track.addEventListener('mouseleave',()=>{ht=setInterval(()=>slide(1),6000);});
 
 // NEWSLETTER
-function handleNL(e){ e.preventDefault(); HOW.toast('Welcome to the Whisker Club — check your inbox.'); e.target.reset(); }
+function handleNL(e){
+  e.preventDefault();
+  const email = (e.target.querySelector('input[type=email]')||{}).value || '';
+  HOW.subscribe(email, '', 'homepage-newsletter');
+  HOW.toast('Welcome to the Whisker Club — check your inbox to confirm.');
+  e.target.reset();
+}
 </script>
 </body>
 </html>

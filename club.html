@@ -45,7 +45,15 @@
 <script src="app.js"></script>
 <script>
 HOW.mountChrome();
-function joinClub(e){ e.preventDefault(); HOW.toast('Welcome to the Whisker Club! 🐾'); setTimeout(()=>location.href='account.html',900); }
+function joinClub(e){
+  e.preventDefault();
+  const f = e.target;
+  const email = (f.querySelector('input[type=email]')||{}).value || '';
+  const name = (f.querySelector('input[placeholder="Marnie"]')||{}).value || '';
+  HOW.subscribe(email, name, 'club-page');
+  HOW.toast('Welcome to the Whisker Club! 🐾 Check your inbox to confirm.');
+  setTimeout(()=>location.href='account.html', 1400);
+}
 </script>
 </body>
 </html>
